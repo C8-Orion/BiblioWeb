@@ -1,166 +1,330 @@
-# BiblioWeb
+# 📚 BiblioWeb
 
-BiblioWeb es un prototipo de biblioteca digital desarrollado con **HTML5, CSS3, Bootstrap 5.3 y JavaScript**. Permite conocer los servicios de la biblioteca, explorar un catálogo de libros, filtrar resultados y visualizar un espacio de administración con acceso de demostración.
+### Plataforma web para la consulta y administración de una biblioteca
 
-> **Importante:** este proyecto es una demostración frontend. No utiliza backend ni base de datos. Los datos del panel son estáticos y los formularios de préstamo y administración no guardan ni envían información real. La autenticación está implementada únicamente para mostrar el flujo de navegación y no debe utilizarse como mecanismo de seguridad en producción.
+BiblioWeb es un proyecto web colaborativo orientado a la consulta de libros y la administración de un catálogo bibliográfico. Actualmente estamos evolucionando una aplicación existente hacia una arquitectura dinámica, incorporando una API REST con JSON Server para gestionar los datos y mejorar la interacción entre el frontend y el backend.
 
-## Características
+---
 
-### Sitio público
-- Página de inicio con presentación de la biblioteca, servicios, horarios y enlaces de navegación.
-- Catálogo con tarjetas de libros, portada, título, autor y categoría.
-- Búsqueda por título, autor o categoría.
-- Filtros por categoría: Todos, Narrativa, Tecnología y Ciencia.
-- Contador de libros visibles según la búsqueda y el filtro aplicado.
-- Modal de solicitud de préstamo como demostración visual.
+## 1. 🎯 Objetivo del proyecto
 
-### Acceso y administración
-- Formulario de inicio de sesión para el administrador.
-- Validación de campos obligatorios y formato del correo.
-- Comprobación de credenciales de demostración.
-- Protección básica de la página de administración mediante `sessionStorage`.
-- Opción para cerrar sesión.
-- Panel con formulario visual para libros y tablas de ejemplo de libros y solicitudes.
+Desarrollar una plataforma web que permita:
 
-### Interfaz
-- Diseño adaptable a diferentes tamaños de pantalla mediante Bootstrap.
-- Tema claro y oscuro, con preferencia guardada en `localStorage`.
-- Estilos compartidos, componentes reutilizables y recursos gráficos locales.
+- Consultar el catálogo de libros públicamente.
+- Visualizar información detallada de cada libro.
+- Buscar y filtrar libros por diferentes criterios.
+- Iniciar sesión como administrador.
+- Gestionar los registros del catálogo mediante operaciones CRUD.
+- Mantener una interfaz responsive y una experiencia de usuario consistente.
 
-## Tecnologías utilizadas
+## 2. 🛠️ Tecnologías utilizadas
 
-- **HTML5:** estructura y contenido de las páginas.
-- **CSS3:** estilos propios, variables y adaptación visual.
-- **Bootstrap 5.3:** sistema de grillas, componentes, formularios, botones, tarjetas, tablas y modales.
-- **JavaScript:** validación del acceso, control demostrativo de sesión, cambio de tema y filtrado del catálogo.
-- **Google Fonts:** tipografías del proyecto.
-- **Git y GitHub:** control de versiones y trabajo colaborativo.
+| Tecnología | Aplicación |
+|---|---|
+| HTML5 | Estructura y contenido. |
+| CSS3 | Estilos y diseño personalizado. |
+| Bootstrap 5.3 | Diseño responsive y componentes. |
+| JavaScript | Interactividad y lógica del frontend. |
+| JSON Server | Simulación de una API REST. |
+| Node.js / npm | Entorno y gestión de dependencias. |
+| Git | Control de versiones. |
+| GitHub | Repositorio y colaboración. |
+| GitHub Pages | Publicación del frontend. |
 
-## Estructura del proyecto
+## 3. 🏗️ Arquitectura del proyecto
+
+El proyecto utiliza una arquitectura separada en dos partes:
+
+**Frontend:** aplicación estática desarrollada con HTML, CSS y JavaScript, publicada mediante GitHub Pages.
+
+**Backend:** API REST desarrollada con JSON Server, encargada de proporcionar los datos del catálogo.
+
+La comunicación entre ambas partes se realiza mediante peticiones HTTP utilizando `fetch()` desde un módulo centralizado.
 
 ```text
-libreria_bootstrap/
+Navegador
+    |
+    v
+GitHub Pages
+    |
+    v
+HTML + CSS + JavaScript
+    |
+    v
+api.js
+    |
+    v
+fetch() / HTTPS
+    |
+    v
+JSON Server
+    |
+    v
+db.json
+```
+
+La API tendrá operaciones GET, POST, PUT/PATCH y DELETE para consultar y administrar los libros.
+
+## 4. 📁 Estructura del proyecto
+
+```text
+BiblioWeb/
+│
 ├── index.html
-├── README.md
+│
+├── pages/
+│   ├── catalogo.html
+│   ├── login.html
+│   └── admin.html
+│
 ├── css/
 │   ├── base.css
 │   ├── componentes.css
 │   └── estilos.css
+│
 ├── js/
 │   ├── auth.js
 │   ├── guard.js
-│   └── tema.js
-├── pages/
-│   ├── admin.html
-│   ├── catalogo.html
-│   └── login.html
-└── img/
-    ├── actividades.jpeg
-    ├── coleccion.jpeg
-    ├── salas.jpeg
-    ├── logo-libro.svg
-    └── libros/
-        ├── libro1.jpeg
-        ├── libro2.jpeg
-        ├── libro3.jpg
-        ├── libro4.jpg
-        ├── libro5.jpeg
-        ├── libro5.jpg
-        └── libro6.jpg
+│   ├── tema.js
+│   ├── config.js
+│   ├── api.js
+│   ├── landing.js
+│   └── admin.js
+│
+├── img/
+│   └── libros/
+│
+├── api/
+│   ├── db.json
+│   ├── package.json
+│   └── package-lock.json
+│
+├── documentacion/
+│
+├── .gitignore
+└── README.md
 ```
 
-### Descripción de carpetas y archivos
+### Responsabilidad de los archivos JavaScript
 
-| Ruta | Descripción |
+| Archivo | Responsabilidad |
 |---|---|
-| `index.html` | Página principal de BiblioWeb. |
-| `pages/catalogo.html` | Catálogo público, buscador, filtros y modal de préstamo. |
-| `pages/login.html` | Formulario de acceso del administrador. |
-| `pages/admin.html` | Panel de administración de demostración. |
-| `css/base.css` | Estilos y variables base compartidas, incluidos los temas. |
-| `css/componentes.css` | Estilos de componentes reutilizables. |
-| `css/estilos.css` | Ajustes visuales específicos de BiblioWeb. |
-| `js/auth.js` | Validación de acceso, sesión y cierre de sesión. |
-| `js/guard.js` | Script auxiliar de control de acceso. |
-| `js/tema.js` | Selección y persistencia del tema claro u oscuro. |
-| `img/` | Imágenes generales, logotipo y portadas de libros. |
+| `config.js` | Configuración de la URL de la API. |
+| `api.js` | Centralización de las peticiones HTTP. |
+| `auth.js` | Inicio y cierre de sesión. |
+| `guard.js` | Protección del panel administrativo. |
+| `tema.js` | Administración del tema claro y oscuro. |
+| `landing.js` | Consulta y visualización de libros en el inicio. |
+| `admin.js` | Gestión administrativa y operaciones CRUD. |
 
-## Cómo ejecutar el proyecto
+**Principio de organización:** cada archivo debe tener una responsabilidad específica. Los módulos de visualización no deben realizar peticiones `fetch()` directamente; deben utilizar las funciones centralizadas en `api.js`.
 
-No requiere instalación de dependencias ni proceso de compilación.
+## 5. 📖 Estructura de datos
 
-1. Descarga o clona el repositorio.
-2. Abre la carpeta del proyecto.
-3. Ejecuta `index.html` en un navegador web.
+El recurso principal de nuestra API será `libros`.
 
-También puedes utilizar la extensión **Live Server** de Visual Studio Code para iniciar un servidor local y recargar los cambios automáticamente.
+Cada registro tendrá inicialmente los siguientes atributos:
 
-> Se recomienda iniciar desde `index.html` y no abrir directamente las páginas internas, para comprobar correctamente la navegación y las rutas relativas.
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | String | Identificador único. |
+| titulo | String | Título del libro. |
+| autor | String | Autor de la obra. |
+| categoria | String | Categoría bibliográfica. |
+| descripcion | String | Descripción del libro. |
+| imagen | String | Ruta de la portada. |
+| disponible | Boolean | Disponibilidad del libro. |
 
-## Credenciales de demostración
+Ejemplo de `api/db.json`:
 
-Para ingresar al panel administrativo utiliza:
+```json
+{
+  "libros": [
+    {
+      "id": "1",
+      "titulo": "Cosmos",
+      "autor": "Carl Sagan",
+      "categoria": "Ciencia",
+      "descripcion": "Un viaje por el universo.",
+      "imagen": "img/libros/libro1.jpeg",
+      "disponible": true
+    }
+  ]
+}
+```
 
-| Campo | Valor |
+Esta estructura será el contrato de datos compartido entre los integrantes para garantizar que todos los módulos trabajen con los mismos atributos.
+
+## 6. 🔄 Funcionalidades del sistema
+
+### Funcionalidades existentes
+
+- Página de inicio.
+- Catálogo visual de libros.
+- Inicio de sesión demostrativo para administrador.
+- Panel administrativo visual.
+- Tema claro y oscuro.
+- Diseño adaptable a diferentes dispositivos.
+
+### Funcionalidades en desarrollo
+
+- Conexión con JSON Server.
+- Consulta dinámica de libros.
+- Buscador y filtros.
+- Registro de nuevos libros.
+- Edición de registros.
+- Eliminación de libros.
+- Validación de formularios.
+- Mensajes de confirmación y error.
+- Integración completa entre frontend y API.
+
+## 7. 👥 Equipo de desarrollo
+
+El proyecto se desarrolla colaborativamente mediante la distribución de responsabilidades por módulos.
+
+| Integrante | Responsabilidad | Rama |
+|---|---|---|
+| David | API e integración de datos. | `feat/api-integration` |
+| Emanuel | Catálogo dinámico, búsqueda y filtros. | `feat/catalog-improvements` |
+| Arley | Panel administrativo y CRUD. | `feat/admin-crud` |
+| Yerson | Integración Full Stack, pruebas y revisión general. | `feat/fullstack-integration` |
+
+Cada integrante tiene autonomía sobre su módulo, pero todos deben respetar la arquitectura y el contrato de datos establecidos por el equipo.
+
+## 8. 🌿 Flujo de trabajo con Git
+
+Utilizamos Git y GitHub para organizar el desarrollo y mantener un historial de cambios.
+
+### Ramas principales
+
+- `main`: rama principal y versión integrada del proyecto.
+- `feat/api-integration`: desarrollo de la API.
+- `feat/catalog-improvements`: mejoras del catálogo.
+- `feat/admin-crud`: administración de libros.
+- `feat/fullstack-integration`: integración y pruebas.
+
+### Convenciones de commits
+
+Utilizamos mensajes descriptivos siguiendo una convención sencilla:
+
+| Prefijo | Uso |
 |---|---|
-| Correo | `admin@biblioweb.test` |
-| Contraseña | `Admin123` |
+| `feat:` | Nueva funcionalidad. |
+| `fix:` | Corrección de errores. |
+| `style:` | Cambios visuales. |
+| `refactor:` | Mejoras en la organización del código. |
+| `docs:` | Actualización de documentación. |
+| `chore:` | Configuración y mantenimiento. |
 
-La sesión se mantiene en `sessionStorage`, por lo que está asociada a la pestaña del navegador y se pierde al cerrar la sesión o la pestaña.
+Ejemplos:
 
-**Advertencia de seguridad:** las credenciales están visibles en el código JavaScript del cliente. Este método no protege información real. Una aplicación en producción necesitaría autenticación y autorización implementadas en un servidor, además de almacenamiento seguro de contraseñas.
+```bash
+git add .
+git commit -m "feat: implementa consulta de libros"
+git push
+```
 
-## Navegación del sitio
+### Integración de cambios
 
-- **Inicio:** `index.html`
-- **Catálogo:** `pages/catalogo.html`
-- **Acceso de administrador:** `pages/login.html`
-- **Panel de administración:** `pages/admin.html` (requiere la sesión de demostración)
+1. Cada integrante trabaja en su rama.
+2. Realiza commits pequeños y descriptivos.
+3. Publica sus avances en GitHub.
+4. Crea un Pull Request hacia `main`.
+5. El equipo revisa los cambios.
+6. Se integran las funcionalidades después de su validación.
 
-Las páginas ubicadas dentro de `pages/` utilizan rutas relativas como `../css/`, `../js/` y `../img/` para acceder a los recursos compartidos.
+**Regla:** no realizar cambios directamente sobre `main`.
 
-## Alcance y funcionalidades no implementadas
+## 9. 💻 Instalación y ejecución local
 
-BiblioWeb es un prototipo de interfaz. Por el momento:
+### Requisitos
 
-- No existe conexión con una API, servidor o base de datos.
-- Las solicitudes de préstamo no se envían ni se almacenan.
-- El formulario administrativo no crea, edita ni elimina libros.
-- Las tablas del panel contienen información estática de ejemplo.
-- No hay gestión real de usuarios, préstamos, devoluciones ni inventario.
-- El inicio de sesión es demostrativo y no proporciona seguridad real.
+- Git.
+- Node.js.
+- npm.
+- Visual Studio Code.
+- Navegador web.
 
-## Trabajo colaborativo
+### 1. Clonar el repositorio
 
-El proyecto se desarrolló en equipo, distribuyendo las páginas y responsabilidades para integrar una experiencia visual común:
+```bash
+git clone https://github.com/C8-Orion/BiblioWeb.git
+```
 
-- **Inicio / landing:** estructura de presentación, servicios y horarios.
-- **Catálogo:** tarjetas de libros, búsqueda, filtros y modal de solicitud.
-- **Login y JavaScript compartido:** validación del acceso, control de sesión y selector de tema.
-- **Administración:** formulario visual y tablas de información de ejemplo.
+Ingresar al proyecto:
 
-Para contribuir, se recomienda trabajar en ramas independientes y realizar cambios mediante Pull Requests hacia la rama principal. Antes de integrar, comprobar rutas, enlaces, estilos y funcionamiento en distintos tamaños de pantalla.
+```bash
+cd BiblioWeb
+```
 
-## Pruebas manuales recomendadas
+### 2. Instalar las dependencias de la API
 
-- [ ] Abrir `index.html` y recorrer la navegación.
-- [ ] Entrar al catálogo y comprobar la búsqueda por título, autor y categoría.
-- [ ] Aplicar cada filtro y verificar que el contador se actualice.
-- [ ] Abrir y cerrar el modal de solicitud de préstamo.
-- [ ] Intentar iniciar sesión con campos vacíos y credenciales incorrectas.
-- [ ] Iniciar sesión con las credenciales de demostración y comprobar el acceso al panel.
-- [ ] Intentar abrir el panel sin sesión.
-- [ ] Cerrar sesión y comprobar el regreso al inicio.
-- [ ] Cambiar entre tema claro y oscuro en las páginas.
-- [ ] Revisar la interfaz en escritorio y móvil.
-- [ ] Comprobar que no existan imágenes, enlaces o recursos que fallen al cargar.
+```bash
+cd api
+npm install
+```
 
-## Autoría
+### 3. Iniciar JSON Server
 
-Proyecto académico colaborativo: **BiblioWeb**.
+Desde la carpeta `api`, ejecutar:
 
-Desarrollado como ejercicio práctico de maquetación web, diseño responsivo, uso de Bootstrap y fundamentos de JavaScript.
+```bash
+npx json-server db.json --port 3000
+```
+
+La API estará disponible localmente en:
+
+```text
+http://localhost:3000/libros
+```
+
+### 4. Iniciar el frontend
+
+Abrir otra terminal en VS Code, ubicarse en la carpeta principal y ejecutar el proyecto mediante Live Server.
+
+La aplicación podrá consultarse desde la dirección local proporcionada por Live Server.
+
+**Importante:** para el desarrollo local necesitamos dos procesos activos: JSON Server y Live Server.
+
+## 10. 🚀 Despliegue
+
+El despliegue contempla dos servicios independientes:
+
+| Componente | Servicio |
+|---|---|
+| Frontend | GitHub Pages |
+| Backend | Servicio de alojamiento compatible con Node.js. |
+
+La API deberá desplegarse en un servicio externo que proporcione una dirección HTTPS pública.
+
+El archivo `js/config.js` permitirá configurar la dirección local durante el desarrollo y la dirección pública durante la producción.
+
+**Nota:** GitHub Pages publica el frontend, pero no ejecuta JSON Server. Por eso necesitamos alojar la API por separado.
+
+## 11. 📋 Documentación y seguimiento
+
+La carpeta `documentacion/` almacenará:
+
+- Diseños y referencias de Stitch.
+- Capturas de pantalla.
+- Evidencias de funcionamiento.
+- Documentación técnica.
+- Material de apoyo para las pruebas.
+
+El equipo utilizará el tablero de Jira para organizar las tareas, asignar responsables y hacer seguimiento al desarrollo.
+
+## 12. 🔐 Consideraciones de seguridad
+
+El inicio de sesión actual es de carácter demostrativo.
+
+El uso de `sessionStorage` y credenciales almacenadas en JavaScript no constituye un mecanismo de autenticación seguro para producción.
+
+JSON Server está orientado a simular una API REST y no proporciona por sí mismo autenticación, autorización ni controles de seguridad para una aplicación real.
+
+Una versión productiva requeriría un backend con autenticación y autorización adecuadas.
 
 ---
 
-© 2026 BiblioWeb. Proyecto educativo.
+**BiblioWeb — Proyecto colaborativo de desarrollo de software.**
+
+Desarrollado por David, Emanuel, Arley y Yerson.
