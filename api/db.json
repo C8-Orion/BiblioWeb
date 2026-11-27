@@ -1,68 +1,59 @@
 {
-    "libros": [
-        {
-            "id": "1",
-            "titulo": "Breve Historia Del Tiempo",
-            "autor": "Stephen Hawking",
-            "categoria": "Ciencia",
-            "descripcion": "Hawking explica de manera accesible grandes preguntas del cosmos: el Big Bang, los agujeros negros y la naturaleza del tiempo.",
-            "portada": "../img/libros/libro6.jpg",
-            "disponible": true
-        },
-        {
-            "id": "2",
-            "titulo": "Clean Code",
-            "autor": "Robert C. Martin",
-            "categoria": "Tecnologia",
-            "descripcion": "Principios y buenas prácticas para escribir código limpio, legible y fácil de mantener.",
-            "portada": "../img/libros/libro4.jpg",
-            "disponible": true
-        },
-        {
-            "id": "3",
-            "titulo": "Cosmos",
-            "autor": "Carl Sagan",
-            "categoria": "Ciencia",
-            "descripcion": "Un viaje por la historia del universo y de la ciencia, desde las estrellas hasta el origen de la vida.",
-            "portada": "../img/libros/libro5.jpg",
-            "disponible": true
-        },
-        {
-            "id": "4",
-            "titulo": "El Principito",
-            "autor": "Antoine de Saint-Exupéry",
-            "categoria": "Narrativa",
-            "descripcion": "Un aviador perdido en el desierto conoce a un pequeño príncipe venido de otro planeta.",
-            "portada": "../img/libros/libro2.jpeg",
-            "disponible": true
-        },
-        {
-            "id": "5",
-            "titulo": "La metamorfosis",
-            "autor": "Franz Kafka",
-            "categoria": "Narrativa",
-            "descripcion": "Gregorio Samsa despierta convertido en un enorme insecto y debe enfrentar el rechazo de su familia.",
-            "portada": "../img/libros/libro1.jpeg",
-            "disponible": true
-        },
-        {
-            "id": "6",
-            "titulo": "The Pragmatic Programmer",
-            "autor": "Andrew Hunt & David Thomas",
-            "categoria": "Tecnologia",
-            "descripcion": "Una guía clásica con consejos prácticos para escribir mejor software y crecer como desarrollador.",
-            "portada": "../img/libros/libro3.jpg",
-            "disponible": true
-        },
-        {
-            "id": "7",
-            "titulo": "Dexter",
-            "autor": "Jeff Lindsay",
-            "categoria": "Narrativa",
-            "descripcion": " Dexter Morgan trabaja como analista forense especializado en salpicaduras de sangre para el departamento de policía de Miami, pero de noche actúa como asesino en serie guiado por una voz interior que llama su «oscuro pasajero».",
-            "portada": "../img/libros/libroDefault.png",
-            "disponible": true
-        }
-    ],
-    "$schema": "./node_modules/json-server/schema.json"
+  "libros": [
+    {
+      "id": "1",
+      "titulo": "Breve Historia Del Tiempo",
+      "autor": "Stephen Hawking",
+      "categoria": "Ciencia",
+      "descripcion": "Hawking explica de manera accesible grandes preguntas del cosmos: el Big Bang, los agujeros negros y la naturaleza del tiempo.",
+      "portada": "../img/libros/libro6.jpg",
+      "disponible": true
+    },
+    {
+      "id": "2",
+      "titulo": "Clean Code",
+      "autor": "Robert C. Martin",
+      "categoria": "Tecnologia",
+      "descripcion": "Principios y buenas prácticas para escribir código limpio, legible y fácil de mantener.",
+      "portada": "../img/libros/libro4.jpg",
+      "disponible": true
+    },
+    {
+      "id": "3",
+      "titulo": "Cosmos",
+      "autor": "Carl Sagan",
+      "categoria": "Ciencia",
+      "descripcion": "Un viaje por la historia del universo y de la ciencia, desde las estrellas hasta el origen de la vida.",
+      "portada": "../img/libros/libro5.jpg",
+      "disponible": true
+    },
+    {
+      "id": "4",
+      "titulo": "El Principito",
+      "autor": "Antoine de Saint-Exupéry",
+      "categoria": "Narrativa",
+      "descripcion": "Un aviador perdido en el desierto conoce a un pequeño príncipe venido de otro planeta.",
+      "portada": "../img/libros/libro2.jpeg",
+      "disponible": true
+    },
+    {
+      "id": "5",
+      "titulo": "La metamorfosis",
+      "autor": "Franz Kafka",
+      "categoria": "Narrativa",
+      "descripcion": "Gregorio Samsa despierta convertido en un enorme insecto y debe enfrentar el rechazo de su familia.",
+      "portada": "../img/libros/libro1.jpeg",
+      "disponible": true
+    },
+    {
+      "titulo": "El programador pragmático",
+      "autor": "Andrew Hunt & David Thomas",
+      "categoria": "Tecnologia",
+      "descripcion": "Una guía clásica con consejos prácticos para escribir mejor software y crecer como desarrollador.",
+      "portada": "../img/libros/libro3.jpg",
+      "disponible": true,
+      "id": "6"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

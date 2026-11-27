@@ -1,166 +1,182 @@
 # BiblioWeb
 
-BiblioWeb es un prototipo de biblioteca digital desarrollado con **HTML5, CSS3, Bootstrap 5.3 y JavaScript**. Permite conocer los servicios de la biblioteca, explorar un catálogo de libros, filtrar resultados y visualizar un espacio de administración con acceso de demostración.
+Sitio web de consulta y administración de una biblioteca. El público puede explorar el catálogo y el personal puede iniciar sesión para crear, editar y eliminar libros.
 
-> **Importante:** este proyecto es una demostración frontend. No utiliza backend ni base de datos. Los datos del panel son estáticos y los formularios de préstamo y administración no guardan ni envían información real. La autenticación está implementada únicamente para mostrar el flujo de navegación y no debe utilizarse como mecanismo de seguridad en producción.
+## Estado del proyecto
 
-## Características
+Las funciones principales están implementadas para ejecución local:
 
-### Sitio público
-- Página de inicio con presentación de la biblioteca, servicios, horarios y enlaces de navegación.
-- Catálogo con tarjetas de libros, portada, título, autor y categoría.
-- Búsqueda por título, autor o categoría.
-- Filtros por categoría: Todos, Narrativa, Tecnología y Ciencia.
-- Contador de libros visibles según la búsqueda y el filtro aplicado.
-- Modal de solicitud de préstamo como demostración visual.
+- La página principal consulta la API y muestra como máximo seis libros. Conserva los seis más recientes según el orden recibido; cuando se agrega otro, el más antiguo deja de mostrarse en esta cuadrícula.
+- El catálogo público muestra todos los libros y permite buscar por título, autor o categoría, además de filtrar por categoría.
+- El panel permite consultar, crear, editar y eliminar libros mediante JSON Server.
+- El formulario exige título, autor, categoría y descripción. Informa cuando una operación se completa o falla.
+- El inicio de sesión de demostración protege el panel y permite cerrar la sesión.
 
-### Acceso y administración
-- Formulario de inicio de sesión para el administrador.
-- Validación de campos obligatorios y formato del correo.
-- Comprobación de credenciales de demostración.
-- Protección básica de la página de administración mediante `sessionStorage`.
-- Opción para cerrar sesión.
-- Panel con formulario visual para libros y tablas de ejemplo de libros y solicitudes.
+**El sitio publicado requiere una API externa con HTTPS.** La configuración actual apunta a `http://localhost:3000`, que solo funciona en la computadora donde se ejecuta JSON Server. GitHub Pages no aloja ni ejecuta la API.
 
-### Interfaz
-- Diseño adaptable a diferentes tamaños de pantalla mediante Bootstrap.
-- Tema claro y oscuro, con preferencia guardada en `localStorage`.
-- Estilos compartidos, componentes reutilizables y recursos gráficos locales.
+## Tecnologías
 
-## Tecnologías utilizadas
+- HTML, CSS y JavaScript con módulos ES.
+- Bootstrap 5.3 para componentes y diseño adaptable.
+- Node.js, npm y JSON Server para simular la API REST.
+- `fetch()` para comunicar el frontend con la API.
 
-- **HTML5:** estructura y contenido de las páginas.
-- **CSS3:** estilos propios, variables y adaptación visual.
-- **Bootstrap 5.3:** sistema de grillas, componentes, formularios, botones, tarjetas, tablas y modales.
-- **JavaScript:** validación del acceso, control demostrativo de sesión, cambio de tema y filtrado del catálogo.
-- **Google Fonts:** tipografías del proyecto.
-- **Git y GitHub:** control de versiones y trabajo colaborativo.
-
-## Estructura del proyecto
+## Estructura principal
 
 ```text
-libreria_bootstrap/
-├── index.html
-├── README.md
+BiblioWeb/
+├── index.html                 # Portada y selección de seis libros
+├── pages/
+│   ├── catalogo.html          # Catálogo público completo
+│   ├── login.html             # Acceso de demostración
+│   └── admin.html             # Formulario e inventario administrativo
 ├── css/
 │   ├── base.css
 │   ├── componentes.css
 │   └── estilos.css
 ├── js/
-│   ├── auth.js
-│   ├── guard.js
-│   └── tema.js
-├── pages/
-│   ├── admin.html
-│   ├── catalogo.html
-│   └── login.html
-└── img/
-    ├── actividades.jpeg
-    ├── coleccion.jpeg
-    ├── salas.jpeg
-    ├── logo-libro.svg
-    └── libros/
-        ├── libro1.jpeg
-        ├── libro2.jpeg
-        ├── libro3.jpg
-        ├── libro4.jpg
-        ├── libro5.jpeg
-        ├── libro5.jpg
-        └── libro6.jpg
+│   ├── config.js              # Dirección base de la API
+│   ├── api.js                 # Funciones fetch para libros
+│   ├── auth.js                # Inicio, cierre y protección de sesión
+│   ├── admin.js               # Operaciones del panel
+│   └── tema.js                # Tema claro y oscuro
+└── api/
+    ├── db.json                # Datos de prueba
+    ├── package.json
+    └── package-lock.json
 ```
 
-### Descripción de carpetas y archivos
+La portada y el catálogo tienen módulos JavaScript dentro de sus páginas HTML; ambos usan las funciones centralizadas en `js/api.js`.
 
-| Ruta | Descripción |
-|---|---|
-| `index.html` | Página principal de BiblioWeb. |
-| `pages/catalogo.html` | Catálogo público, buscador, filtros y modal de préstamo. |
-| `pages/login.html` | Formulario de acceso del administrador. |
-| `pages/admin.html` | Panel de administración de demostración. |
-| `css/base.css` | Estilos y variables base compartidas, incluidos los temas. |
-| `css/componentes.css` | Estilos de componentes reutilizables. |
-| `css/estilos.css` | Ajustes visuales específicos de BiblioWeb. |
-| `js/auth.js` | Validación de acceso, sesión y cierre de sesión. |
-| `js/guard.js` | Script auxiliar de control de acceso. |
-| `js/tema.js` | Selección y persistencia del tema claro u oscuro. |
-| `img/` | Imágenes generales, logotipo y portadas de libros. |
+## Datos de los libros
 
-## Cómo ejecutar el proyecto
+La API utiliza el recurso `/libros`. Cada libro tiene esta forma:
 
-No requiere instalación de dependencias ni proceso de compilación.
+| Campo | Tipo | Uso |
+|---|---|---|
+| `id` | Texto | Identificador asignado por JSON Server. |
+| `titulo` | Texto | Nombre del libro; obligatorio. |
+| `autor` | Texto | Autor; obligatorio. |
+| `categoria` | Texto | Categoría; obligatoria. |
+| `descripcion` | Texto | Sinopsis; obligatoria. |
+| `portada` | Texto | Ruta o URL de la portada; opcional en el formulario. |
+| `disponible` | Booleano | Estado de disponibilidad. |
 
-1. Descarga o clona el repositorio.
-2. Abre la carpeta del proyecto.
-3. Ejecuta `index.html` en un navegador web.
+Los datos locales se guardan en `api/db.json`.
 
-También puedes utilizar la extensión **Live Server** de Visual Studio Code para iniciar un servidor local y recargar los cambios automáticamente.
+## Requisitos previos
 
-> Se recomienda iniciar desde `index.html` y no abrir directamente las páginas internas, para comprobar correctamente la navegación y las rutas relativas.
+- Git.
+- Node.js 20.19 o superior y npm.
+- Visual Studio Code con la extensión Live Server, o un servidor estático equivalente.
 
-## Credenciales de demostración
+## Ejecutar en local
 
-Para ingresar al panel administrativo utiliza:
+1. Clona el repositorio y entra en la carpeta:
+
+   ```bash
+   git clone https://github.com/C8-Orion/BiblioWeb.git
+   cd BiblioWeb
+   ```
+
+2. Abre una terminal en `api` e instala las dependencias:
+
+   ```bash
+   cd api
+   npm ci
+   ```
+
+3. En esa misma carpeta, inicia JSON Server y deja la terminal abierta:
+
+   ```bash
+   npx json-server db.json --port 3000
+   ```
+
+   La API debe responder en <http://localhost:3000/libros>.
+
+4. Abre `index.html` en VS Code y selecciona **Open with Live Server**. Usa la dirección local que muestre Live Server, normalmente <http://127.0.0.1:5500/>. No abras las páginas con doble clic: los módulos ES necesitan servirse mediante HTTP.
+
+Se necesitan dos procesos activos: JSON Server y Live Server.
+
+## Cuenta de demostración
 
 | Campo | Valor |
 |---|---|
 | Correo | `admin@biblioweb.test` |
 | Contraseña | `Admin123` |
 
-La sesión se mantiene en `sessionStorage`, por lo que está asociada a la pestaña del navegador y se pierde al cerrar la sesión o la pestaña.
+Estas credenciales están escritas en el frontend y solo sirven para revisar el flujo de la actividad. No deben usarse para proteger datos reales.
 
-**Advertencia de seguridad:** las credenciales están visibles en el código JavaScript del cliente. Este método no protege información real. Una aplicación en producción necesitaría autenticación y autorización implementadas en un servidor, además de almacenamiento seguro de contraseñas.
+## Guía de validación
 
-## Navegación del sitio
+1. Confirma que `http://localhost:3000/libros` devuelve los libros en JSON.
+2. Abre la portada y verifica que haya como máximo seis tarjetas.
+3. Abre el catálogo y prueba la búsqueda y los filtros de categoría.
+4. Sin sesión, intenta abrir `pages/admin.html`; debe llevarte al login.
+5. Inicia sesión con la cuenta de demostración y confirma que abre el panel. Cierra la sesión y verifica que vuelves a la portada.
+6. Intenta guardar un libro sin un campo obligatorio; el formulario debe impedirlo.
+7. Crea un libro. Debe aparecer en el inventario y en el catálogo al recargar.
+8. Edita el título o la descripción. El cambio debe verse después de recargar el catálogo.
+9. Elimina un libro y confirma la acción. Debe desaparecer del inventario y del catálogo.
+10. Agrega un séptimo libro y recarga la portada: debe seguir mostrando seis tarjetas y entrar el nuevo libro en lugar del más antiguo. El catálogo completo debe mostrar los siete.
+11. Para revisar los mensajes de fallo, detén JSON Server, recarga las páginas o intenta guardar; deben informar que no se pudo cargar o guardar. Reinicia el servidor al terminar.
 
-- **Inicio:** `index.html`
-- **Catálogo:** `pages/catalogo.html`
-- **Acceso de administrador:** `pages/login.html`
-- **Panel de administración:** `pages/admin.html` (requiere la sesión de demostración)
+## API disponible
 
-Las páginas ubicadas dentro de `pages/` utilizan rutas relativas como `../css/`, `../js/` y `../img/` para acceder a los recursos compartidos.
+El módulo `js/api.js` expone estas operaciones:
 
-## Alcance y funcionalidades no implementadas
+| Acción | Método y ruta |
+|---|---|
+| Consultar libros | `GET /libros` |
+| Crear libro | `POST /libros` |
+| Actualizar libro | `PUT /libros/:id` |
+| Actualizar parcialmente | `PATCH /libros/:id` |
+| Eliminar libro | `DELETE /libros/:id` |
 
-BiblioWeb es un prototipo de interfaz. Por el momento:
+## Publicación en GitHub Pages y Railway
 
-- No existe conexión con una API, servidor o base de datos.
-- Las solicitudes de préstamo no se envían ni se almacenan.
-- El formulario administrativo no crea, edita ni elimina libros.
-- Las tablas del panel contienen información estática de ejemplo.
-- No hay gestión real de usuarios, préstamos, devoluciones ni inventario.
-- El inicio de sesión es demostrativo y no proporciona seguridad real.
+GitHub Pages publica los archivos estáticos del frontend. JSON Server debe ejecutarse como un servicio independiente con una URL pública HTTPS. El repositorio incluye `api/start.sh`: inicializa `db.json` en el volumen persistente de Railway y escucha en el puerto que proporciona la plataforma.
 
-## Trabajo colaborativo
+### Publicar la API en Railway
 
-El proyecto se desarrolló en equipo, distribuyendo las páginas y responsabilidades para integrar una experiencia visual común:
+1. Inicia sesión en Railway y crea un proyecto desde el repositorio `C8-Orion/BiblioWeb`.
+2. En la configuración del servicio, define **Root Directory** como `api`.
+3. Define el comando de instalación como `npm ci` y el comando de inicio como `npm start`.
+4. Añade un volumen persistente al servicio con punto de montaje `/data`.
+5. En **Settings → Networking**, genera un dominio público. Railway proporciona HTTPS para el dominio asignado.
+6. Abre `https://TU-DOMINIO-API/libros`. Debe devolver el catálogo en JSON.
 
-- **Inicio / landing:** estructura de presentación, servicios y horarios.
-- **Catálogo:** tarjetas de libros, búsqueda, filtros y modal de solicitud.
-- **Login y JavaScript compartido:** validación del acceso, control de sesión y selector de tema.
-- **Administración:** formulario visual y tablas de información de ejemplo.
+El volumen es necesario porque conserva los cambios de `db.json` cuando el servicio reinicia o se despliega de nuevo. Guarda una copia de seguridad de los datos si son importantes.
 
-Para contribuir, se recomienda trabajar en ramas independientes y realizar cambios mediante Pull Requests hacia la rama principal. Antes de integrar, comprobar rutas, enlaces, estilos y funcionamiento en distintos tamaños de pantalla.
+### Conectar GitHub Pages con la API
 
-## Pruebas manuales recomendadas
+Cuando Railway muestre la URL asignada, cambia `API_URL` en `js/config.js` por el dominio base, por ejemplo:
 
-- [ ] Abrir `index.html` y recorrer la navegación.
-- [ ] Entrar al catálogo y comprobar la búsqueda por título, autor y categoría.
-- [ ] Aplicar cada filtro y verificar que el contador se actualice.
-- [ ] Abrir y cerrar el modal de solicitud de préstamo.
-- [ ] Intentar iniciar sesión con campos vacíos y credenciales incorrectas.
-- [ ] Iniciar sesión con las credenciales de demostración y comprobar el acceso al panel.
-- [ ] Intentar abrir el panel sin sesión.
-- [ ] Cerrar sesión y comprobar el regreso al inicio.
-- [ ] Cambiar entre tema claro y oscuro en las páginas.
-- [ ] Revisar la interfaz en escritorio y móvil.
-- [ ] Comprobar que no existan imágenes, enlaces o recursos que fallen al cargar.
+```js
+export const API_URL = "https://TU-DOMINIO-API";
+```
 
-## Autoría
+No añadas `/libros`: `js/api.js` añade esa ruta a cada petición. Guarda el cambio y súbelo a GitHub para que Pages publique la nueva configuración.
 
-Proyecto académico colaborativo: **BiblioWeb**.
+### Validar la publicación
 
-Desarrollado como ejercicio práctico de maquetación web, diseño responsivo, uso de Bootstrap y fundamentos de JavaScript.
+1. Abre el endpoint `https://TU-DOMINIO-API/libros` y confirma que responde con JSON.
+2. Abre <https://c8-orion.github.io/BiblioWeb/> y confirma que aparecen seis libros.
+3. Inicia sesión en el panel, crea, edita y elimina un libro.
+4. Recarga la portada y el catálogo para confirmar que reflejan los cambios.
+5. Reinicia o vuelve a desplegar la API y confirma que los datos siguen ahí.
+
+La URL HTTPS real de la API todavía debe generarse desde la cuenta del equipo. Hasta entonces, la configuración del frontend sigue apuntando a `localhost` y el CRUD solo funciona en local.
+
+## Diseño y seguimiento
+
+- Diseño en Google Stitch: [BiblioWeb Frontend Portal](https://stitch.google.com/projects/3868128387779378376). La documentación visual está en `documentacion/stitch.md`.
+- El tablero de Jira del equipo se gestiona en la organización del proyecto. El enlace al tablero no está guardado en este repositorio.
+
+## Seguridad y alcance
+
+`sessionStorage` y las credenciales del frontend permiten demostrar navegación con sesión, pero cualquier persona puede inspeccionar o modificar ese código desde el navegador. JSON Server tampoco implementa autenticación ni autorización. Para una aplicación real se necesita un backend con autenticación, autorización y almacenamiento adecuados.
 
 ---
 
-© 2026 BiblioWeb. Proyecto educativo.
+Proyecto colaborativo de BiblioWeb, desarrollado por David, Emanuel, Arley y Yerson.
