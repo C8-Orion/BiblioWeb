@@ -60,6 +60,8 @@ async function guardarLibro(evento) {
 }
 //cuando le dan guardar, ejecuta guardalibro
 formulario.addEventListener("submit", guardarLibro) 
+
+// Llena el formulario con el libro que se va a editar
     async function prepararEdicion(id) {
         const libro = (await listarLibros()).find((l) => l.id === id)
         document.getElementById("titulo").value = libro.titulo
@@ -70,10 +72,25 @@ formulario.addEventListener("submit", guardarLibro)
         idEditando = id
     }
 
+// Revisa qué botón de la tabla presionaron
 function manejarClic(event) {
     const boton = event.target.closest("button")
     if (!boton) return
     if (boton.classList.contains("btn-editar")) prepararEdicion(boton.dataset.id)
+    if(boton.classList.contains("btn-eliminar")) borrarLibro(boton.dataset.id)
     }
+
+// Cuando hacen clic en la tabla, revisa qué botón fue
 tabla.addEventListener("click", manejarClic)
+// Si le dan "Cancelar", sale del modo edición
 formulario.addEventListener("reset", () => {idEditando = null})
+
+async function borrarLibro(id) {
+    if (!confirm("¿Seguro que quieres eliminar este libro?")) return
+    try {
+        await eliminarLibro(id)
+        cargarLibros()
+    } catch (error){console.error(error)}
+
+    
+}
