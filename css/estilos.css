@@ -330,6 +330,48 @@ body > footer {
     --bs-btn-hover-border-color: var(--bw-decorativo);
 }
 
+.btn-verde {
+    --bs-btn-bg: var(--bw-acento);
+    --bs-btn-border-color: var(--bw-acento);
+    --bs-btn-color: var(--bw-texto);
+    --bs-btn-hover-bg: var(--bw-accion);
+    --bs-btn-hover-border-color: var(--bw-accion);
+    --bs-btn-hover-color: var(--bw-texto-accion);
+    --bs-btn-active-bg: var(--bw-primario);
+    --bs-btn-active-border-color: var(--bw-primario);
+    --bs-btn-active-color: var(--bw-texto-accion);
+    font-weight: 700;
+}
+
+.btn-bw-secondary {
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: var(--bw-primario);
+    --bs-btn-color: var(--bw-primario);
+    --bs-btn-hover-bg: var(--bw-primario);
+    --bs-btn-hover-border-color: var(--bw-primario);
+    --bs-btn-hover-color: var(--bw-texto-accion);
+    --bs-btn-active-bg: var(--bw-accion);
+    --bs-btn-active-border-color: var(--bw-accion);
+    --bs-btn-active-color: var(--bw-texto-accion);
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .btn-bw-secondary {
+    --bs-btn-border-color: var(--bw-acento);
+    --bs-btn-color: var(--bw-acento);
+    --bs-btn-hover-bg: var(--bw-acento);
+    --bs-btn-hover-border-color: var(--bw-acento);
+    --bs-btn-hover-color: var(--bw-texto);
+    --bs-btn-active-bg: var(--bw-decorativo);
+    --bs-btn-active-border-color: var(--bw-decorativo);
+    --bs-btn-active-color: var(--bw-texto);
+}
+
+.acciones-formulario .btn {
+    min-width: 8.5rem;
+    padding: 0.6rem 1.15rem;
+}
+
  .btn-outline-secondary {
     --bs-btn-color: var(--bw-texto-2);
     --bs-btn-border-color: var(--bw-borde);
