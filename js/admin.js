@@ -86,7 +86,7 @@ tabla.addEventListener("click", manejarClic)
 formulario.addEventListener("reset", () => {idEditando = null})
 
 async function borrarLibro(id) {
-    if (!confirm("¿Seguro que quieres eliminar este libro?")) return
+    if (!(await confirmar())) return
     try {
         await eliminarLibro(id)
         cargarLibros()
@@ -98,4 +98,13 @@ function mostrarMensaje(texto, tipo) {
     caja.className = `alert alert-${tipo}`
     caja.textContent = texto
     setTimeout(() => { caja.className = ""; caja.textContent = ""}, 7000)
+}
+// Abre la tarjeta de confirmación y espera la respuesta (true = eliminar)
+function confirmar() {
+    return new Promise((responder) => {
+        const tarjeta = bootstrap.Modal.getOrCreateInstance("#modal-eliminar")
+        document.getElementById("btn-confirmar-eliminar").onclick = () => { tarjeta.hide(); responder(true) }
+        document.getElementById("modal-eliminar").addEventListener("hidden.bs.modal", () => responder(false), { once: true })
+        tarjeta.show()
+    })
 }
