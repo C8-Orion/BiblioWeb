@@ -55,5 +55,29 @@
       "id": "6"
     }
   ],
+  "solicitudes": [
+    {
+      "libroId": "1",
+      "libroTitulo": "Breve Historia Del Tiempo",
+      "libroAutor": "Stephen Hawking",
+      "nombre": "Test",
+      "correo": "test@gmail.com",
+      "comentario": "test",
+      "estado": "Pendiente",
+      "fechaCreacion": "2026-11-27T19:51:25.354Z",
+      "id": "ZTFpDKBrNUs"
+    },
+    {
+      "libroId": "2",
+      "libroTitulo": "Clean Code",
+      "libroAutor": "Robert C. Martin",
+      "nombre": "Emma",
+      "correo": "emma@gmail.com",
+      "comentario": "Lo quiero para mañana",
+      "estado": "Pendiente",
+      "fechaCreacion": "2026-11-27T19:58:31.992Z",
+      "id": "4th7SD70Oro"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
