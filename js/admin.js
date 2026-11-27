@@ -135,9 +135,21 @@ async function guardarLibro(evento) {
     }
 }
 
+// Abre la tarjeta de confirmación y espera la respuesta (true = eliminar)
+function confirmar(texto) {
+    return new Promise((responder) => {
+        const modal = document.getElementById("modal-eliminar");
+        const tarjeta = bootstrap.Modal.getOrCreateInstance(modal);
+        modal.querySelector(".modal-body").textContent = texto;
+        document.getElementById("btn-confirmar-eliminar").onclick = () => { tarjeta.hide(); responder(true); };
+        modal.addEventListener("hidden.bs.modal", () => responder(false), { once: true });
+        tarjeta.show();
+    });
+}
+
 async function borrarLibro(id) {
     const libro = librosCargados.find((item) => String(item.id) === String(id));
-    if (!libro || !window.confirm(`¿Eliminar «${libro.titulo}» del catálogo?`)) return;
+    if (!libro || !(await confirmar(`¿Eliminar «${libro.titulo}» del catálogo? No se puede deshacer.`))) return;
 
     try {
         await eliminarLibro(id);
