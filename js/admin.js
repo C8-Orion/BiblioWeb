@@ -59,4 +59,21 @@ async function guardarLibro(evento) {
     } catch (error) { console.error(error)}
 }
 //cuando le dan guardar, ejecuta guardalibro
-formulario.addEventListener("submit", guardarLibro)
+formulario.addEventListener("submit", guardarLibro) 
+    async function prepararEdicion(id) {
+        const libro = (await listarLibros()).find((l) => l.id === id)
+        document.getElementById("titulo").value = libro.titulo
+        document.getElementById("autor").value = libro.autor
+        document.getElementById("categoria").value = libro.categoria
+        document.getElementById("descripcion").value = libro.descripcion
+        document.getElementById("portada").value = libro.portada
+        idEditando = id
+    }
+
+function manejarClic(event) {
+    const boton = event.target.closest("button")
+    if (!boton) return
+    if (boton.classList.contains("btn-editar")) prepararEdicion(boton.dataset.id)
+    }
+tabla.addEventListener("click", manejarClic)
+formulario.addEventListener("reset", () => {idEditando = null})
