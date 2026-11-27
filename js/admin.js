@@ -1,11 +1,10 @@
-import { listarLibros, listarSolicitudes, crearLibro, reemplazarLibro, eliminarLibro } from "./api.js";
+import { listarLibros, crearLibro, reemplazarLibro, eliminarLibro } from "./api.js";
 
 const tabla = document.getElementById("tabla-libros");
 const contador = document.getElementById("contador-libros");
 const formulario = document.getElementById("form-libro");
 const mensaje = document.getElementById("mensaje");
 const botonGuardar = formulario.querySelector('[type="submit"]');
-const tablaSolicitudes = document.getElementById("tabla-solicitudes");
 let idEditando = null;
 let librosCargados = [];
 
@@ -25,47 +24,6 @@ function crearCelda(texto, etiqueta = "td") {
     const celda = document.createElement(etiqueta);
     celda.textContent = texto ?? "";
     return celda;
-}
-
-async function cargarSolicitudes() {
-    try {
-        const solicitudes = (await listarSolicitudes()).sort((a, b) =>
-            new Date(b.fechaCreacion || 0) - new Date(a.fechaCreacion || 0)
-        );
-        tablaSolicitudes.replaceChildren();
-        document.getElementById("contador-solicitudes").textContent = `${solicitudes.filter(s => s.estado === "Pendiente").length} Pendientes`;
-        solicitudes.forEach((solicitud) => {
-            const fila = document.createElement("tr");
-            fila.append(crearCelda(`SOL-${solicitud.id}`, "th"));
-            fila.append(crearCelda(solicitud.libroTitulo));
-            fila.append(crearCelda(solicitud.nombre));
-            fila.append(crearCelda(solicitud.correo));
-            fila.append(crearCelda(solicitud.comentario || "—"));
-            const estado = document.createElement("td");
-            const badge = document.createElement("span");
-            badge.className = `badge ${solicitud.estado === "Pendiente" ? "bg-warning text-dark" : "bg-success"}`;
-            badge.textContent = solicitud.estado || "Pendiente";
-            estado.append(badge);
-            fila.append(estado);
-            tablaSolicitudes.append(fila);
-        });
-        if (!solicitudes.length) {
-            const fila = document.createElement("tr");
-            const vacio = crearCelda("Aún no hay solicitudes de préstamo.");
-            vacio.colSpan = 6;
-            vacio.className = "text-center text-secondary py-4";
-            fila.append(vacio);
-            tablaSolicitudes.append(fila);
-        }
-    } catch (error) {
-        console.error(error);
-        const fila = document.createElement("tr");
-        const celda = crearCelda("No se pudieron cargar las solicitudes. Verifica que JSON Server esté activo.");
-        celda.colSpan = 6;
-        celda.className = "text-center text-danger py-4";
-        fila.append(celda);
-        tablaSolicitudes.replaceChildren(fila);
-    }
 }
 
 function mostrarLibros(libros) {
@@ -221,4 +179,3 @@ tabla.addEventListener("click", (evento) => {
 
 ocultarMensaje();
 cargarLibros();
-cargarSolicitudes();

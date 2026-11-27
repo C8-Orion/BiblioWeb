@@ -10,7 +10,8 @@ Las funciones principales están implementadas para ejecución local:
 - El catálogo público muestra todos los libros y permite buscar por título, autor o categoría, además de filtrar por categoría.
 - Desde el catálogo, el público puede enviar una solicitud de préstamo para un libro con su nombre, correo y un comentario opcional.
 - El panel permite consultar, crear, editar y eliminar libros mediante JSON Server.
-- El panel muestra las solicitudes guardadas en JSON Server, ordenadas de la más reciente a la más antigua, junto con su estado.
+- Las solicitudes se administran dentro del panel, con búsqueda, filtro por estado y paginación de cinco registros.
+- El personal puede cambiar el estado de cada solicitud: Pendiente, Aprobada, Rechazada, Prestado o Devuelto.
 - El formulario exige título, autor, categoría y descripción. Informa cuando una operación se completa o falla.
 - El inicio de sesión de demostración protege el panel y permite cerrar la sesión.
 
@@ -31,7 +32,7 @@ BiblioWeb/
 ├── pages/
 │   ├── catalogo.html          # Catálogo público completo
 │   ├── login.html             # Acceso de demostración
-│   └── admin.html             # Formulario e inventario administrativo
+│   └── admin.html             # Inventario y gestión de solicitudes
 ├── css/
 │   ├── base.css
 │   ├── componentes.css
@@ -42,6 +43,7 @@ BiblioWeb/
 │   ├── landing.js             # Libros destacados en la portada
 │   ├── auth.js                # Inicio, cierre y protección de sesión
 │   ├── admin.js               # Operaciones del panel
+│   ├── solicitudes-admin.js   # Paginación y actualización de estados
 │   └── tema.js                # Tema claro y oscuro
 └── api/
     ├── db.json                # Datos de prueba
@@ -55,7 +57,7 @@ La portada y el catálogo tienen módulos JavaScript dentro de sus páginas HTML
 
 ## Solicitudes de préstamo
 
-Las solicitudes se guardan en el recurso `/solicitudes` de JSON Server y en la colección `solicitudes` de `api/db.json`. Cada registro contiene el identificador asignado por JSON Server, el libro solicitado, los datos de contacto, un comentario opcional, la fecha de creación y el estado inicial `Pendiente`. El panel consulta este recurso para mostrar la tabla **Solicitudes Recibidas** y contar las solicitudes pendientes.
+Las solicitudes se guardan en el recurso `/solicitudes` de JSON Server y en la colección `solicitudes` de `api/db.json`. Cada registro contiene el identificador asignado por JSON Server, el libro solicitado, los datos de contacto, un comentario opcional, la fecha de creación y el estado inicial `Pendiente`. Se gestionan desde `pages/admin.html`, junto al inventario, con búsqueda, filtro por estado y cinco solicitudes por página.
 
 El formulario requiere nombre, correo y aceptación de los términos y condiciones. El libro se toma de la tarjeta seleccionada en el catálogo.
 
@@ -130,10 +132,11 @@ Estas credenciales están escritas en el frontend y solo sirven para revisar el 
 8. Edita el título o la descripción. El cambio debe verse después de recargar el catálogo.
 9. Elimina un libro y confirma la acción. Debe desaparecer del inventario y del catálogo.
 10. En el catálogo, solicita el préstamo de un libro con nombre, correo y aceptación de términos. Debe mostrarse la confirmación de envío.
-11. Abre o recarga el panel de administración y confirma que aparece la solicitud con el libro, los datos del solicitante y el estado **Pendiente**.
-12. Confirma que `http://localhost:3000/solicitudes` devuelve el registro enviado.
-13. Agrega un séptimo libro y recarga la portada: debe seguir mostrando seis tarjetas y entrar el nuevo libro en lugar del más antiguo. El catálogo completo debe mostrar los siete.
-14. Para revisar los mensajes de fallo, detén JSON Server, recarga las páginas o intenta guardar; deben informar que no se pudo cargar o guardar. Reinicia el servidor al terminar.
+11. En el panel, confirma que aparece la solicitud con el libro, los datos del solicitante y el estado **Pendiente**.
+12. Cambia el estado de una solicitud y guarda el cambio; recarga el panel y confirma que se conservó. Con más de cinco solicitudes, verifica que los controles permitan recorrer las páginas.
+13. Confirma que `http://localhost:3000/solicitudes` devuelve el registro enviado.
+14. Agrega un séptimo libro y recarga la portada: debe seguir mostrando seis tarjetas y entrar el nuevo libro en lugar del más antiguo. El catálogo completo debe mostrar los siete.
+15. Para revisar los mensajes de fallo, detén JSON Server, recarga las páginas o intenta guardar; deben informar que no se pudo cargar o guardar. Reinicia el servidor al terminar.
 
 ## API disponible
 
@@ -148,6 +151,7 @@ El módulo `js/api.js` expone estas operaciones:
 | Eliminar libro | `DELETE /libros/:id` |
 | Consultar solicitudes | `GET /solicitudes` |
 | Crear solicitud de préstamo | `POST /solicitudes` |
+| Actualizar estado de una solicitud | `PATCH /solicitudes/:id` |
 
 ## Publicación en GitHub Pages y Railway
 

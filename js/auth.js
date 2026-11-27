@@ -119,7 +119,8 @@ function protectLogin() {
 
     }
 
-    if (auth !== 'true' && currentWindow.includes("admin.html")) {
+    const esPaginaAdministrativa = currentWindow.endsWith("/admin.html");
+    if (auth !== 'true' && esPaginaAdministrativa) {
 
         window.location.href = "./login.html";
 

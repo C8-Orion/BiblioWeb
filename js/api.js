@@ -23,6 +23,16 @@ export async function crearSolicitud(solicitud) {
     return res.json();
 }
 
+export async function actualizarSolicitud(id, cambios) {
+    const res = await fetch(`${API_URL}/solicitudes/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cambios),
+    });
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+    return res.json();
+}
+
 // Crea un libro nuevo
 export async function crearLibro(libro) {
     const res = await fetch(`${API_URL}/libros`, {
