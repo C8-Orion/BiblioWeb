@@ -7,6 +7,22 @@ export async function listarLibros() {
     return res.json();
 }
 
+export async function listarSolicitudes() {
+    const res = await fetch(`${API_URL}/solicitudes`);
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+    return res.json();
+}
+
+export async function crearSolicitud(solicitud) {
+    const res = await fetch(`${API_URL}/solicitudes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(solicitud),
+    });
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+    return res.json();
+}
+
 // Crea un libro nuevo
 export async function crearLibro(libro) {
     const res = await fetch(`${API_URL}/libros`, {

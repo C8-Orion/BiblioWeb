@@ -1,6 +1,6 @@
 # BiblioWeb
 
-Sitio web de consulta y administración de una biblioteca. El público puede explorar el catálogo y el personal puede iniciar sesión para crear, editar y eliminar libros.
+Sitio web de consulta y administración de una biblioteca. El público puede explorar el catálogo y solicitar préstamos; el personal puede iniciar sesión para administrar libros y consultar las solicitudes recibidas.
 
 ## Estado del proyecto
 
@@ -8,11 +8,13 @@ Las funciones principales están implementadas para ejecución local:
 
 - La página principal consulta la API y muestra como máximo seis libros. Conserva los seis más recientes según el orden recibido; cuando se agrega otro, el más antiguo deja de mostrarse en esta cuadrícula.
 - El catálogo público muestra todos los libros y permite buscar por título, autor o categoría, además de filtrar por categoría.
+- Desde el catálogo, el público puede enviar una solicitud de préstamo para un libro con su nombre, correo y un comentario opcional.
 - El panel permite consultar, crear, editar y eliminar libros mediante JSON Server.
+- El panel muestra las solicitudes guardadas en JSON Server, ordenadas de la más reciente a la más antigua, junto con su estado.
 - El formulario exige título, autor, categoría y descripción. Informa cuando una operación se completa o falla.
 - El inicio de sesión de demostración protege el panel y permite cerrar la sesión.
 
-**El sitio publicado requiere una API externa con HTTPS.** La configuración actual apunta a `http://localhost:3000`, que solo funciona en la computadora donde se ejecuta JSON Server. GitHub Pages no aloja ni ejecuta la API.
+**El sitio publicado usa una API externa con HTTPS en Railway.** En desarrollo local, la configuración apunta a `http://localhost:3000`; GitHub Pages no aloja ni ejecuta la API.
 
 ## Tecnologías
 
@@ -36,17 +38,25 @@ BiblioWeb/
 │   └── estilos.css
 ├── js/
 │   ├── config.js              # Dirección base de la API
-│   ├── api.js                 # Funciones fetch para libros
+│   ├── api.js                 # Funciones fetch para libros y solicitudes
 │   ├── auth.js                # Inicio, cierre y protección de sesión
 │   ├── admin.js               # Operaciones del panel
 │   └── tema.js                # Tema claro y oscuro
 └── api/
     ├── db.json                # Datos de prueba
+    ├── public/                 # Carpeta estática requerida por JSON Server
+    ├── start.sh                # Inicio local y en Railway
     ├── package.json
     └── package-lock.json
 ```
 
 La portada y el catálogo tienen módulos JavaScript dentro de sus páginas HTML; ambos usan las funciones centralizadas en `js/api.js`.
+
+## Solicitudes de préstamo
+
+Las solicitudes se guardan en el recurso `/solicitudes` de JSON Server y en la colección `solicitudes` de `api/db.json`. Cada registro contiene el identificador asignado por JSON Server, el libro solicitado, los datos de contacto, un comentario opcional, la fecha de creación y el estado inicial `Pendiente`. El panel consulta este recurso para mostrar la tabla **Solicitudes Recibidas** y contar las solicitudes pendientes.
+
+El formulario requiere nombre, correo y aceptación de los términos y condiciones. El libro se toma de la tarjeta seleccionada en el catálogo.
 
 ## Datos de los libros
 
@@ -92,7 +102,7 @@ Los datos locales se guardan en `api/db.json`.
    npx json-server db.json --port 3000
    ```
 
-   La API debe responder en <http://localhost:3000/libros>.
+   La API debe responder en <http://localhost:3000/libros> y <http://localhost:3000/solicitudes>. Al inicio, la colección de solicitudes puede estar vacía.
 
 4. Abre `index.html` en VS Code y selecciona **Open with Live Server**. Usa la dirección local que muestre Live Server, normalmente <http://127.0.0.1:5500/>. No abras las páginas con doble clic: los módulos ES necesitan servirse mediante HTTP.
 
@@ -118,8 +128,11 @@ Estas credenciales están escritas en el frontend y solo sirven para revisar el 
 7. Crea un libro. Debe aparecer en el inventario y en el catálogo al recargar.
 8. Edita el título o la descripción. El cambio debe verse después de recargar el catálogo.
 9. Elimina un libro y confirma la acción. Debe desaparecer del inventario y del catálogo.
-10. Agrega un séptimo libro y recarga la portada: debe seguir mostrando seis tarjetas y entrar el nuevo libro en lugar del más antiguo. El catálogo completo debe mostrar los siete.
-11. Para revisar los mensajes de fallo, detén JSON Server, recarga las páginas o intenta guardar; deben informar que no se pudo cargar o guardar. Reinicia el servidor al terminar.
+10. En el catálogo, solicita el préstamo de un libro con nombre, correo y aceptación de términos. Debe mostrarse la confirmación de envío.
+11. Abre o recarga el panel de administración y confirma que aparece la solicitud con el libro, los datos del solicitante y el estado **Pendiente**.
+12. Confirma que `http://localhost:3000/solicitudes` devuelve el registro enviado.
+13. Agrega un séptimo libro y recarga la portada: debe seguir mostrando seis tarjetas y entrar el nuevo libro en lugar del más antiguo. El catálogo completo debe mostrar los siete.
+14. Para revisar los mensajes de fallo, detén JSON Server, recarga las páginas o intenta guardar; deben informar que no se pudo cargar o guardar. Reinicia el servidor al terminar.
 
 ## API disponible
 
@@ -132,6 +145,8 @@ El módulo `js/api.js` expone estas operaciones:
 | Actualizar libro | `PUT /libros/:id` |
 | Actualizar parcialmente | `PATCH /libros/:id` |
 | Eliminar libro | `DELETE /libros/:id` |
+| Consultar solicitudes | `GET /solicitudes` |
+| Crear solicitud de préstamo | `POST /solicitudes` |
 
 ## Publicación en GitHub Pages y Railway
 
@@ -144,29 +159,33 @@ GitHub Pages publica los archivos estáticos del frontend. JSON Server debe ejec
 3. Define el comando de instalación como `npm ci` y el comando de inicio como `npm start`.
 4. Añade un volumen persistente al servicio con punto de montaje `/data`.
 5. En **Settings → Networking**, genera un dominio público. Railway proporciona HTTPS para el dominio asignado.
-6. Abre `https://TU-DOMINIO-API/libros`. Debe devolver el catálogo en JSON.
+6. Abre `https://TU-DOMINIO-API/libros` y `https://TU-DOMINIO-API/solicitudes`. Deben devolver sus colecciones en JSON.
 
 El volumen es necesario porque conserva los cambios de `db.json` cuando el servicio reinicia o se despliega de nuevo. Guarda una copia de seguridad de los datos si son importantes.
 
 ### Conectar GitHub Pages con la API
 
-Cuando Railway muestre la URL asignada, cambia `API_URL` en `js/config.js` por el dominio base, por ejemplo:
+La configuración de `js/config.js` ya selecciona la API de Railway para el sitio publicado y `localhost:3000` para el desarrollo local:
 
 ```js
-export const API_URL = "https://TU-DOMINIO-API";
+const esDesarrolloLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+export const API_URL = esDesarrolloLocal
+    ? "http://localhost:3000"
+    : "https://biblioweb-production.up.railway.app";
 ```
 
-No añadas `/libros`: `js/api.js` añade esa ruta a cada petición. Guarda el cambio y súbelo a GitHub para que Pages publique la nueva configuración.
+No añadas `/libros`: `js/api.js` añade la ruta correspondiente a cada petición.
 
 ### Validar la publicación
 
-1. Abre el endpoint `https://TU-DOMINIO-API/libros` y confirma que responde con JSON.
+1. Abre <https://biblioweb-production.up.railway.app/libros> y <https://biblioweb-production.up.railway.app/solicitudes>; ambos deben responder con JSON.
 2. Abre <https://c8-orion.github.io/BiblioWeb/> y confirma que aparecen seis libros.
 3. Inicia sesión en el panel, crea, edita y elimina un libro.
 4. Recarga la portada y el catálogo para confirmar que reflejan los cambios.
-5. Reinicia o vuelve a desplegar la API y confirma que los datos siguen ahí.
+5. Envía una solicitud desde el catálogo y confirma que aparece en el panel administrativo.
+6. Reinicia o vuelve a desplegar la API y confirma que los datos siguen ahí.
 
-La URL HTTPS real de la API todavía debe generarse desde la cuenta del equipo. Hasta entonces, la configuración del frontend sigue apuntando a `localhost` y el CRUD solo funciona en local.
+La API pública está disponible en `https://biblioweb-production.up.railway.app`. El dominio debe apuntar al puerto donde JSON Server escucha (actualmente, el puerto `8080` asignado por Railway).
 
 ## Diseño y seguimiento
 

@@ -147,10 +147,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="#" class="d-flex flex-column">
+                    <form id="form-solicitud" class="d-flex flex-column">
+                        <div id="mensaje-solicitud" class="alert mb-3" role="status" hidden></div>
+                        <p class="small text-secondary">Libro: <strong id="libro-solicitado"></strong></p>
+                        <input type="hidden" name="libroId" id="libro-id">
                         <div class="d-flex flex-column mb-3">
                             <label for="name" class="form-label small fw-bold">Nombre completo</label>
-                            <input type="text" class="form-control" required
+                            <input type="text" name="nombre" id="name" class="form-control" required maxlength="120"
                                 placeholder="Ingresa el nombre del solicitante...">
                         </div>
                         <div class="d-flex flex-column mb-3">
@@ -160,12 +163,12 @@
                         </div>
                         <div class="d-flex flex-column mb-3">
                             <label for="comment" class="form-label small fw-bold">Comentarios(Opcional)</label>
-                            <textarea name="comment" id="comment" class="form-control"
+                            <textarea name="comentario" id="comment" class="form-control" maxlength="300"
                                 placeholder="Escribe detalles sobre tu reserva (Maximo 300 Caracteres...)"
                                 rows="3"></textarea>
                         </div>
                         <div class="form-check mb-1">
-                            <input type="checkbox" name="politicas" id="politicas" class="form-check-input">
+                            <input type="checkbox" name="politicas" id="politicas" class="form-check-input" required>
                             <label for="politicas" class="form-check-label small text-secondary">Terminos y
                                 condiciones</label>
                         </div>
@@ -174,7 +177,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-terracota">Reservar</button>
+                    <button type="submit" form="form-solicitud" class="btn btn-terracota" id="btn-enviar-solicitud">Solicitar préstamo</button>
                 </div>
             </div>
         </div>
@@ -184,13 +187,48 @@
 
     <!---Script para Busqueda de libros-->
     <script type="module">
-        import { listarLibros } from "../js/api.js";
+        import { listarLibros, crearSolicitud } from "../js/api.js";
 
         const buscar = document.getElementById('search-bar');
         const botonesFiltro = document.querySelectorAll('.btnFiltro');
         const contadorLibros = document.getElementById('contador-libros');
         const grilla = document.getElementById('grilla');
         let categoriaActual = 'Todos';
+        const modalReserv = document.getElementById('modalReserv');
+        const formularioSolicitud = document.getElementById('form-solicitud');
+        const mensajeSolicitud = document.getElementById('mensaje-solicitud');
+        const botonSolicitud = document.getElementById('btn-enviar-solicitud');
+        let librosDisponibles = [];
+
+        modalReserv.addEventListener('show.bs.modal', evento => {
+            const tarjeta = evento.relatedTarget?.closest('.tarjeta-libro');
+            const libro = librosDisponibles.find(item => String(item.id) === tarjeta?.dataset.id);
+            document.getElementById('libro-id').value = libro?.id || '';
+            document.getElementById('libro-solicitado').textContent = libro ? `${libro.titulo} — ${libro.autor}` : 'No seleccionado';
+            mensajeSolicitud.hidden = true;
+        });
+
+        formularioSolicitud.addEventListener('submit', async evento => {
+            evento.preventDefault();
+            const libro = librosDisponibles.find(item => String(item.id) === document.getElementById('libro-id').value);
+            if (!libro) return;
+            const datos = new FormData(formularioSolicitud);
+            botonSolicitud.disabled = true;
+            try {
+                await crearSolicitud({ libroId: libro.id, libroTitulo: libro.titulo, libroAutor: libro.autor,
+                    nombre: datos.get('nombre').trim(), correo: datos.get('email').trim(),
+                    comentario: datos.get('comentario').trim(), estado: 'Pendiente', fechaCreacion: new Date().toISOString() });
+                formularioSolicitud.reset();
+                mensajeSolicitud.className = 'alert alert-success mb-3';
+                mensajeSolicitud.textContent = 'Tu solicitud fue enviada. La biblioteca la revisará pronto.';
+                mensajeSolicitud.hidden = false;
+            } catch (error) {
+                console.error(error);
+                mensajeSolicitud.className = 'alert alert-danger mb-3';
+                mensajeSolicitud.textContent = 'No se pudo enviar la solicitud. Verifica la conexión e inténtalo de nuevo.';
+                mensajeSolicitud.hidden = false;
+            } finally { botonSolicitud.disabled = false; }
+        });
 
         const esc = s => String(s).replace(/[&<>"']/g, c =>
             ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -198,7 +236,7 @@
 
         function crearTarjeta(l) {
             return `
-  <div class="col tarjeta-libro" data-categoria="${esc(l.categoria)}">
+  <div class="col tarjeta-libro" data-id="${esc(l.id)}" data-categoria="${esc(l.categoria)}">
     <article class="card card-bw h-100 p-3">
       <span class="badge rounded-pill badge-${norm(l.categoria)} position-absolute top-0 start-0 m-4 px-3 py-2 z-1">${esc(l.categoria)}</span>
       <div class="book-cover-wrap mb-3">
@@ -244,6 +282,7 @@
             grilla.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
             try {
                 const libros = await listarLibros();
+                librosDisponibles = libros;
                 grilla.innerHTML = libros.length
                     ? libros.map(crearTarjeta).join('')
                     : '<p class="col-12 text-center text-secondary py-5">Aún no hay libros en el catálogo.</p>';

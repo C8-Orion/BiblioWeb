@@ -127,7 +127,7 @@
         <section class="card card-biblioweb p-4" aria-labelledby="titulo-solicitudes">
             <header class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="h4 font-serif fw-bold text-primary mb-0" id="titulo-solicitudes">Solicitudes Recibidas</h2>
-                <span class="badge bg-warning-subtle text-warning-emphasis">3 Pendientes</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis" id="contador-solicitudes">0 Pendientes</span>
             </header>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -143,32 +143,7 @@
                             <th scope="col">Estado</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th class="fw-normal" scope="row"><code>SOL-001</code></th>
-                            <td class="fw-bold">Cosmos</td>
-                            <td>Elena Valenzuela</td>
-                            <td>elena.v@correo.test</td>
-                            <td><em>"Para tesis de grado en comunicación científica"</em></td>
-                            <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                        </tr>
-                        <tr>
-                            <th class="fw-normal" scope="row"><code>SOL-002</code></th>
-                            <td class="fw-bold">Cien Años de Soledad</td>
-                            <td>Mateo Rivas</td>
-                            <td>m.rivas@lectores.org</td>
-                            <td><em>"Lectura para club de libro municipal"</em></td>
-                            <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                        </tr>
-                        <tr>
-                            <th class="fw-normal" scope="row"><code>SOL-003</code></th>
-                            <td class="fw-bold">Clean Code</td>
-                            <td>Sofía Navarro</td>
-                            <td>sofia.navarro@tech.es</td>
-                            <td><em>"Lista de espera tras renovación"</em></td>
-                            <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tabla-solicitudes"></tbody>
                 </table>
             </div>
         </section>
