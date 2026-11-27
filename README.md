@@ -39,6 +39,7 @@ BiblioWeb/
 ├── js/
 │   ├── config.js              # Dirección base de la API
 │   ├── api.js                 # Funciones fetch para libros y solicitudes
+│   ├── landing.js             # Libros destacados en la portada
 │   ├── auth.js                # Inicio, cierre y protección de sesión
 │   ├── admin.js               # Operaciones del panel
 │   └── tema.js                # Tema claro y oscuro
