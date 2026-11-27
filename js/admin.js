@@ -28,8 +28,7 @@ function mostrarLibros(libros) {
 async function cargarLibros() {
         try {
             mostrarLibros(await listarLibros())
-        } catch (error) { console.error(error)}
-}
+        } catch (error) { console.error(error); mostrarMensaje("No se pudieron cargar los libros", "danger") } }
 
 // Al abrir la página, carga los libros
 cargarLibros()
@@ -47,6 +46,7 @@ async function guardarLibro(evento) {
 
     // Si falta un campo obligatorio, no guarda
     if (!libro.titulo || !libro.autor || !libro.categoria) {
+        mostrarMensaje("Completa titulo, autor y categoria", "warning")
         return
     }
     // Lo manda a la API, limpia el formulario y refresca la tabla
@@ -56,8 +56,8 @@ async function guardarLibro(evento) {
         formulario.reset()
         idEditando = null 
         cargarLibros()
-    } catch (error) { console.error(error)}
-}
+        mostrarMensaje("Libro guardado ✅", "success")
+    } catch (error) { console.error(error); mostrarMensaje("No se pudo guardar el libro", "danger") } }
 //cuando le dan guardar, ejecuta guardalibro
 formulario.addEventListener("submit", guardarLibro) 
 
@@ -90,7 +90,12 @@ async function borrarLibro(id) {
     try {
         await eliminarLibro(id)
         cargarLibros()
-    } catch (error){console.error(error)}
+        mostrarMensaje("Libro eliminado 🗑️", "success")
+    } catch (error) { console.error(error); mostrarMensaje("No se pudo eliminar el libro", "danger") } }
 
-    
+function mostrarMensaje(texto, tipo) { 
+    const caja = document.getElementById("mensaje")
+    caja.className = `alert alert-${tipo}`
+    caja.textContent = texto
+    setTimeout(() => { caja.className = ""; caja.textContent = ""}, 7000)
 }
