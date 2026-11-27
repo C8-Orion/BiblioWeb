@@ -46,5 +46,6 @@ export async function eliminarLibro(id) {
         method: "DELETE",
     });
     if (!res.ok) throw new Error(`Error ${res.status}`);
-    return res.json();
+    const texto = await res.text();
+    return texto ? JSON.parse(texto) : null;
 }
