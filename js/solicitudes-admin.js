@@ -1,4 +1,4 @@
-import { listarSolicitudes, actualizarSolicitud } from "./api.js";
+import { listarSolicitudes, actualizarSolicitud, eliminarSolicitud } from "./api.js";
 
 const tabla = document.getElementById("tabla-solicitudes");
 const campoBusqueda = document.getElementById("buscar-solicitud");
@@ -79,7 +79,12 @@ function crearFila(solicitud) {
     guardar.className = "btn btn-sm btn-outline-primary btn-guardar-estado";
     guardar.dataset.id = solicitud.id;
     guardar.textContent = "Guardar estado";
-    controles.append(selector, guardar);
+    const eliminar = document.createElement("button");
+    eliminar.type = "button";
+    eliminar.className = "btn btn-sm btn-outline-danger btn-eliminar-solicitud";
+    eliminar.dataset.id = solicitud.id;
+    eliminar.textContent = "Eliminar";
+    controles.append(selector, guardar, eliminar);
     celdaEstado.append(controles);
     fila.append(celdaEstado);
     return fila;
@@ -159,6 +164,28 @@ async function guardarEstado(boton) {
     }
 }
 
+async function borrarSolicitud(boton) {
+    const solicitud = solicitudes.find((item) => String(item.id) === String(boton.dataset.id));
+    if (!solicitud) return;
+
+    const confirmar = window.confirm(`¿Eliminar la solicitud de «${solicitud.libroTitulo}» de ${solicitud.nombre}? Esta acción no se puede deshacer.`);
+    if (!confirmar) return;
+
+    boton.disabled = true;
+    boton.textContent = "Eliminando…";
+    try {
+        await eliminarSolicitud(solicitud.id);
+        solicitudes = solicitudes.filter((item) => String(item.id) !== String(solicitud.id));
+        mostrarMensaje(`La solicitud SOL-${solicitud.id} se eliminó.`);
+        renderizar();
+    } catch (error) {
+        console.error(error);
+        mostrarMensaje("No se pudo eliminar la solicitud. Inténtalo de nuevo.", "danger");
+        boton.disabled = false;
+        boton.textContent = "Eliminar";
+    }
+}
+
 campoBusqueda.addEventListener("input", () => { paginaActual = 1; renderizar(); });
 filtroEstado.addEventListener("change", () => { paginaActual = 1; renderizar(); });
 document.getElementById("pagina-anterior").addEventListener("click", () => { paginaActual -= 1; renderizar(); });
@@ -166,6 +193,8 @@ document.getElementById("pagina-siguiente").addEventListener("click", () => { pa
 tabla.addEventListener("click", (evento) => {
     const boton = evento.target.closest(".btn-guardar-estado");
     if (boton) guardarEstado(boton);
+    const botonEliminar = evento.target.closest(".btn-eliminar-solicitud");
+    if (botonEliminar) borrarSolicitud(botonEliminar);
 });
 
 cargarSolicitudes();

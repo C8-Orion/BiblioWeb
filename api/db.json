@@ -55,18 +55,6 @@
       "id": "6"
     }
   ],
-  "solicitudes": [
-    {
-      "libroId": "2",
-      "libroTitulo": "Clean Code",
-      "libroAutor": "Robert C. Martin",
-      "nombre": "yersonsneyder@gmail.com",
-      "correo": "yersonsneyder@gmail.com",
-      "comentario": "Por favor lo necesito para mañana",
-      "estado": "Pendiente",
-      "fechaCreacion": "2026-11-27T21:57:47.691Z",
-      "id": "ldSiQg6a5yY"
-    }
-  ],
+  "solicitudes": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

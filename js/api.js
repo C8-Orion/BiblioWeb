@@ -33,6 +33,15 @@ export async function actualizarSolicitud(id, cambios) {
     return res.json();
 }
 
+export async function eliminarSolicitud(id) {
+    const res = await fetch(`${API_URL}/solicitudes/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+    const texto = await res.text();
+    return texto ? JSON.parse(texto) : null;
+}
+
 // Crea un libro nuevo
 export async function crearLibro(libro) {
     const res = await fetch(`${API_URL}/libros`, {
